@@ -1,7 +1,3 @@
-import "dotenv/config";
-import fetch from "node-fetch";
-import { verifyKey } from "discord-interactions";
-
 // Simple method that returns a random emoji from list
 export function getRandomEmoji() {
     const emojiList = [

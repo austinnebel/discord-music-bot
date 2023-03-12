@@ -1,12 +1,15 @@
 import { getRPSChoices } from "./game";
 import { capitalize } from "./utils";
-import { APIApplicationCommand } from "discord-api-types/v10";
+import {
+    APIApplicationCommand,
+    ApplicationCommandType,
+} from "discord-api-types/v10";
 
 // Simple test command
 export const TEST_COMMAND: Partial<APIApplicationCommand> = {
     name: "test",
-    description: "Basic guild command",
-    type: 1,
+    description: "Tests the connection to the application.",
+    type: ApplicationCommandType.ChatInput,
 };
 
 // Command containing options
@@ -22,7 +25,7 @@ export const CHALLENGE_COMMAND: Partial<APIApplicationCommand> = {
             choices: createCommandChoices(),
         },
     ],
-    type: 1,
+    type: ApplicationCommandType.ChatInput,
 };
 
 // Get the game choices from game
