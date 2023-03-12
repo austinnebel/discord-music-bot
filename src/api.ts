@@ -40,14 +40,12 @@ export async function InstallGuildCommands(
 ) {
     if (guildId === "" || appId === "") return;
 
-    const data = await getGuildCommands(appId, guildId);
-
-    // Get list containing name of each command in guild
-    const installedCommands = data.map((c) => c.name);
+    const installedCommands = await getGuildCommands(appId, guildId);
+    const installedCommandNames = installedCommands.map((c) => c.name);
 
     for (const c of commands) {
         // install if not already installed
-        if (!installedCommands.includes(c.name)) {
+        if (!installedCommandNames.includes(c.name)) {
             console.log(`Installing "${c.name}"`);
             InstallGuildCommand(appId, guildId, c);
         } else {
@@ -70,32 +68,17 @@ export async function UpdateGuildCommands(
 ) {
     if (guildId === "" || appId === "") return;
 
-    // API endpoint to get and post guild commands
-    const endpoint = `applications/${appId}/guilds/${guildId}/commands`;
+    const installedCommands = await getGuildCommands(appId, guildId);
+    const installedCommandNames = installedCommands.map((c) => c.name);
 
-    try {
-        const res = await DiscordRequest(endpoint, { method: "GET" });
-        const data =
-            (await res.json()) as RESTGetAPIApplicationGuildCommandsResult;
-
-        if (!data) {
-            throw new Error("Failed to fetch guild commands.");
+    // updates each comand if installed
+    for (const c of commands) {
+        if (!installedCommandNames.includes(c.name)) {
+            console.log(`"${c.name}" not installed, can't update.`);
+        } else {
+            console.log(`Updating "${c.name}"`);
+            InstallGuildCommand(appId, guildId, c);
         }
-
-        // Get list containing name of each command in guild
-        const installedCommands = data.map((c) => c.name);
-
-        // updates each comand if installed
-        for (const c of commands) {
-            if (!installedCommands.includes(c.name)) {
-                console.log(`"${c.name}" not installed, can't update.`);
-            } else {
-                console.log(`Updating "${c.name}"`);
-                InstallGuildCommand(appId, guildId, c);
-            }
-        }
-    } catch (err) {
-        console.error(err);
     }
 }
 
@@ -132,9 +115,6 @@ export async function InstallGuildCommand(
 export async function DiscordRequest(endpoint: string, options: RequestInit) {
     // append endpoint to root API URL
     const url = "https://discord.com/api/v10/" + endpoint;
-
-    // Stringify payloads
-    if (options.body) options.body = JSON.stringify(options.body);
 
     // Use node-fetch to make requests
     const res = await fetch(url, {
