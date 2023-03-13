@@ -1,44 +1,55 @@
-import { getRPSChoices } from "./game";
-import { capitalize } from "./utils";
 import {
-    APIApplicationCommand,
-    ApplicationCommandType,
-} from "discord-api-types/v10";
+    SlashCommandBuilder,
+    SlashCommandIntegerOption,
+    SlashCommandStringOption,
+} from "discord.js";
 
-// Simple test command
-export const TEST_COMMAND: Partial<APIApplicationCommand> = {
-    name: "test",
-    description: "Tests the connection to the application.",
-    type: ApplicationCommandType.ChatInput,
-};
+export const ping = new SlashCommandBuilder()
+    .setName("ping")
+    .setDescription("Replies with Pong!");
 
-// Command containing options
-export const CHALLENGE_COMMAND: Partial<APIApplicationCommand> = {
-    name: "challenge",
-    description: "Challenge to a match of rock paper scissors",
-    options: [
-        {
-            type: 3,
-            name: "object",
-            description: "Pick your object",
-            required: true,
-            choices: createCommandChoices(),
-        },
-    ],
-    type: ApplicationCommandType.ChatInput,
-};
+export const play = new SlashCommandBuilder()
+    .setName("play")
+    .setDescription("Play a track, or resume the current track.")
+    .addStringOption(
+        new SlashCommandStringOption()
+            .setName("track")
+            .setDescription(
+                "Track name or URL. Leave empty to resume the current track."
+            )
+            .setRequired(false)
+    );
 
-// Get the game choices from game
-function createCommandChoices() {
-    const choices = getRPSChoices();
-    const commandChoices = [];
+export const pause = new SlashCommandBuilder()
+    .setName("pause")
+    .setDescription("Pauses the current track.");
 
-    for (let choice of choices) {
-        commandChoices.push({
-            name: capitalize(choice),
-            value: choice.toLowerCase(),
-        });
-    }
+export const skip = new SlashCommandBuilder()
+    .setName("skip")
+    .setDescription("Skips the current track.");
 
-    return commandChoices;
-}
+export const seek = new SlashCommandBuilder()
+    .setName("seek")
+    .setDescription("Seek to a position in the current track.")
+    .addStringOption(
+        new SlashCommandStringOption()
+            .setName("position")
+            .setDescription(
+                "The track position to seek to, either in seconds, MM:SS, or HH:MM:SS format."
+            )
+            .setRequired(true)
+    );
+
+export const volume = new SlashCommandBuilder()
+    .setName("volume")
+    .setDescription("Sets the volume of the current queue, from 0 to 100.");
+
+export const queue = new SlashCommandBuilder()
+    .setName("queue")
+    .setDescription("Returns all tracks in the queue.")
+    .addIntegerOption(
+        new SlashCommandIntegerOption()
+            .setName("page")
+            .setDescription("Page in the queue to retreive.")
+            .setRequired(false)
+    );
