@@ -20,6 +20,19 @@ export const play = new SlashCommandBuilder()
             .setRequired(false)
     );
 
+export const mix = new SlashCommandBuilder()
+    .setName("mix")
+    .setDescription(
+        "Create a mix from either a specific track or the current track."
+    )
+    .addStringOption(
+        new SlashCommandStringOption()
+            .setName("track")
+            .setDescription(
+                "Track name or URL. Leave empty to create a mix from the current track."
+            )
+            .setRequired(false)
+    );
 export const pause = new SlashCommandBuilder()
     .setName("pause")
     .setDescription("Pauses the current track.");
@@ -27,6 +40,18 @@ export const pause = new SlashCommandBuilder()
 export const skip = new SlashCommandBuilder()
     .setName("skip")
     .setDescription("Skips the current track.");
+
+export const skipTo = new SlashCommandBuilder()
+    .setName("skip-to")
+    .setDescription("Skips the the specified track in the queue.")
+    .addIntegerOption(
+        new SlashCommandIntegerOption()
+            .setName("index")
+            .setDescription(
+                "The index of the track. Use /queue to see the index of each track."
+            )
+            .setRequired(true)
+    );
 
 export const seek = new SlashCommandBuilder()
     .setName("seek")
@@ -43,6 +68,10 @@ export const seek = new SlashCommandBuilder()
 export const volume = new SlashCommandBuilder()
     .setName("volume")
     .setDescription("Sets the volume of the current queue, from 0 to 100.");
+
+export const clear = new SlashCommandBuilder()
+    .setName("clear")
+    .setDescription("Clears the queue.");
 
 export const queue = new SlashCommandBuilder()
     .setName("queue")

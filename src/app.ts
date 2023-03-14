@@ -7,6 +7,7 @@ import {
     ActivityType,
     Interaction,
     ChatInputCommandInteraction,
+    EmbedBuilder,
 } from "discord.js";
 import { Player } from "discord-player";
 import * as commands from "./commands";
@@ -17,6 +18,9 @@ import { seek } from "./interactions/seek";
 import { volume } from "./interactions/volume";
 import { createTrackEmbed } from "./utils";
 import { queue } from "./interactions/queue";
+import { mix } from "./interactions/mix";
+import { clear } from "./interactions/clear";
+import { skipTo } from "./interactions/skipTo";
 
 // Application ID
 const app_id = process.env.APP_ID;
@@ -51,16 +55,6 @@ const client = new Client({
 const player = new Player(client);
 
 //////////////// Player Events ////////////////////
-
-// called when a song it skipped
-player.events.on("playerSkip", (queue, track) => {
-    const interaction = queue.metadata as ChatInputCommandInteraction;
-    console.log(interaction.commandName);
-    // @ts-ignore
-    return void queue.metadata.followUp(
-        `Skipped to **${queue.node.playbackTime}**.`
-    );
-});
 
 // called when a track is added to the queue
 player.events.on("audioTrackAdd", (queue, track) => {
@@ -111,12 +105,18 @@ client.on("interactionCreate", async (interaction) => {
     switch (interaction.commandName) {
         case "play":
             return await play(interaction, player);
+        case "mix":
+            return await mix(interaction, player);
         case "skip":
             return await skip(interaction, player);
         case "pause":
             return await pause(interaction, player);
         case "seek":
             return await seek(interaction, player);
+        case "skip-to":
+            return await skipTo(interaction, player);
+        case "clear":
+            return await clear(interaction, player);
         case "volume":
             return await volume(interaction, player);
         case "queue":

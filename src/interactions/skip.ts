@@ -12,7 +12,7 @@ export async function skip(
 
     const queue = player.queues.get(interaction.guildId);
     if (!queue)
-        return void interaction.followUp({
+        return void interaction.editReply({
             content: "❌ | No music in queue!",
         });
 
@@ -25,7 +25,7 @@ export async function skip(
 
     return void interaction.editReply({
         content: skipped
-            ? `⏭️ | Skipped **[${currentTrackTitle}](${currentTrackURL})**`
+            ? `Skipped **[${currentTrackTitle}](<${currentTrackURL}>)**.`
             : "❌ | Something went wrong!",
     });
 }

@@ -4,12 +4,12 @@ import {
     GuildMember,
 } from "discord.js";
 import { Player } from "discord-player";
-import { createTrackEmbed, getMix } from "../utils";
+import { createMixEmbed, createTrackEmbed, getMix } from "../utils";
 
 /**
- * Handles the /play chat command.
+ * Handles the /mix chat command.
  */
-export async function play(
+export async function mix(
     interaction: ChatInputCommandInteraction,
     player: Player
 ) {
@@ -35,19 +35,7 @@ export async function play(
 
     // functionality when no query specified
     if (!trackQuery) {
-        // resume currnet track if exists
-        if (queue.currentTrack) {
-            const resumed = queue.node.resume();
-            return void interaction.editReply({
-                content: resumed
-                    ? `Resuming **[${queue.currentTrack.title}](<${queue.currentTrack.url}>)**`
-                    : "❌ | Something went wrong!",
-            });
-            // play first track if queue has tracks
-        } else if (!queue.isEmpty()) {
-            queue.node.play(queue.tracks[0]);
-            // return error
-        } else {
+        if (!queue.currentTrack) {
             return void interaction.editReply(
                 `❌ | You must specify a song name.`
             );
@@ -55,10 +43,26 @@ export async function play(
     }
 
     try {
-        const { track } = await player.play(voiceChannel, trackQuery);
-        return void interaction.editReply(
-            `Added **[${track.title}](<${track.url}>)** to the queue.`
+        const mixBase = trackQuery ? trackQuery : queue.currentTrack;
+
+        const results = await player.search(mixBase);
+
+        if (results.isEmpty()) {
+            return void interaction.editReply(`Failed to find results.`);
+        }
+        const mix = await getMix(player, results.tracks[0]);
+        queue.addTrack(mix.tracks);
+
+        if (!queue.isEmpty()) {
+            if (!queue.channel) await queue.connect(voiceChannel);
+            if (!queue.isPlaying()) await queue.node.play();
+        }
+        await interaction.editReply(
+            `Added mix of **${mix.tracks.length} tracks** to the queue.`
         );
+
+        const embed = createMixEmbed(mix.title, queue, mix.tracks);
+        return void interaction.followUp({ embeds: [embed] });
     } catch (e) {
         // let's return error if something failed
         return void interaction.editReply(`❌ | Something went wrong: ${e}`);

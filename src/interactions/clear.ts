@@ -2,23 +2,20 @@ import { ChatInputCommandInteraction } from "discord.js";
 import { Player } from "discord-player";
 
 /**
- * Handles the /play chat command.
+ * Handles the /clear chat command.
  */
-export async function pause(
+export async function clear(
     interaction: ChatInputCommandInteraction,
     player: Player
 ) {
+    // let's defer the interaction as things can take time to process
     await interaction.deferReply({ ephemeral: true });
 
     const queue = player.queues.get(interaction.guildId);
-    if (!queue || !queue.isPlaying())
-        return void interaction.editReply({
-            content: "❌ | No music is being played!",
-        });
 
-    const paused = queue.node.pause();
+    const success = player.queues.delete(queue);
 
     return void interaction.editReply({
-        content: paused ? "⏸ | Paused!" : "❌ | Something went wrong!",
+        content: success ? `Queue cleared.` : "❌ | Something went wrong!",
     });
 }
