@@ -13,9 +13,7 @@ export async function clear(
 
     const queue = player.queues.get(interaction.guildId);
 
-    const success = player.queues.delete(queue);
+    queue.clear();
 
-    return void interaction.editReply({
-        content: success ? `Queue cleared.` : "❌ | Something went wrong!",
-    });
+    return void interaction.editReply(`Queue cleared.`);
 }
