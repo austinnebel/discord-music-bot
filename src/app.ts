@@ -21,6 +21,7 @@ import { queue } from "./interactions/queue";
 import { mix } from "./interactions/mix";
 import { clear } from "./interactions/clear";
 import { skipTo } from "./interactions/skipTo";
+import { shuffle } from "./interactions/shuffle";
 
 // Application ID
 const app_id = process.env.APP_ID;
@@ -117,6 +118,8 @@ client.on("interactionCreate", async (interaction) => {
             return await skipTo(interaction, player);
         case "clear":
             return await clear(interaction, player);
+        case "shuffle":
+            return await shuffle(interaction, player);
         case "volume":
             return await volume(interaction, player);
         case "queue":

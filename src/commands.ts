@@ -82,3 +82,7 @@ export const queue = new SlashCommandBuilder()
             .setDescription("Page in the queue to retreive.")
             .setRequired(false)
     );
+
+export const shuffle = new SlashCommandBuilder()
+    .setName("shuffle")
+    .setDescription("Shuffles the current queue.");
