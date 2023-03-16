@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { Player } from "discord-player";
+import { getGuildQueue } from "../utils";
 
 /**
  * Handles the /clear chat command.
@@ -11,7 +12,7 @@ export async function clear(
     // let's defer the interaction as things can take time to process
     await interaction.deferReply({ ephemeral: true });
 
-    const queue = player.queues.get(interaction.guildId);
+    const queue = getGuildQueue(player, interaction);
 
     queue.clear();
 

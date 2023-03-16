@@ -14,7 +14,7 @@ import { skip } from "./interactions/skip";
 import { pause } from "./interactions/pause";
 import { seek } from "./interactions/seek";
 import { volume } from "./interactions/volume";
-import { createTrackEmbed, QueueMetadata } from "./utils";
+import { createTrackEmbed, getGuildQueue, QueueMetadata } from "./utils";
 import { queue } from "./interactions/queue";
 import { mix } from "./interactions/mix";
 import { clear } from "./interactions/clear";
@@ -112,8 +112,7 @@ async function skipToAutoComplete(
     player: Player,
     interaction: AutocompleteInteraction
 ) {
-    const queue = player.queues.get(interaction.guildId);
-    if (!queue) return [];
+    const queue = getGuildQueue(player, interaction);
 
     //Returns a list of songs with their title
     return interaction.respond(

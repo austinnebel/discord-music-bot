@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { Player, Track } from "discord-player";
-import { createQueueEmbed } from "../utils";
+import { createQueueEmbed, getGuildQueue } from "../utils";
 
 /**
  * Handles the /shuffle chat command.
@@ -9,10 +9,10 @@ export async function shuffle(
     interaction: ChatInputCommandInteraction,
     player: Player
 ) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
 
-    const queue = player.queues.get(interaction.guildId);
-    if (!queue || !queue.isPlaying())
+    const queue = getGuildQueue(player, interaction);
+    if (!queue.isPlaying())
         return void interaction.followUp({
             content: "❌ | No music is being played!",
         });

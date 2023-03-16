@@ -9,15 +9,14 @@ export async function play(
     interaction: ChatInputCommandInteraction,
     player: Player
 ) {
+    await interaction.deferReply({ ephemeral: true });
+
     const member = interaction.member as GuildMember;
     const voiceChannel = member.voice.channel;
     const queue = getGuildQueue(player, interaction);
 
     // User's song choice
     const trackQuery = interaction.options.getString("track", false);
-
-    // let's defer the interaction as things can take time to process
-    await interaction.deferReply({ ephemeral: true });
 
     if (!voiceChannel) {
         return void interaction.editReply(

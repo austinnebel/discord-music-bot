@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { Player } from "discord-player";
+import { getGuildQueue } from "../utils";
 
 /**
  * Handles the /play chat command.
@@ -10,8 +11,8 @@ export async function pause(
 ) {
     await interaction.deferReply({ ephemeral: true });
 
-    const queue = player.queues.get(interaction.guildId);
-    if (!queue || !queue.isPlaying())
+    const queue = getGuildQueue(player, interaction);
+    if (!queue.isPlaying())
         return void interaction.editReply({
             content: "❌ | No music is being played!",
         });
@@ -19,6 +20,6 @@ export async function pause(
     const paused = queue.node.pause();
 
     return void interaction.editReply({
-        content: paused ? "⏸ | Paused!" : "❌ | Something went wrong!",
+        content: paused ? "Paused." : "❌ | Something went wrong!",
     });
 }

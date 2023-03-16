@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { Player } from "discord-player";
+import { getGuildQueue } from "../utils";
 
 /**
  * Handles the /skip chat command.
@@ -10,8 +11,8 @@ export async function skip(
 ) {
     await interaction.deferReply({ ephemeral: true });
 
-    const queue = player.queues.get(interaction.guildId);
-    if (!queue)
+    const queue = getGuildQueue(player, interaction);
+    if (!queue.currentTrack)
         return void interaction.editReply({
             content: "❌ | No music in queue!",
         });

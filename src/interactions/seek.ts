@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { Player } from "discord-player";
-import { formattedTimeToSeconds } from "../utils";
+import { formattedTimeToSeconds, getGuildQueue } from "../utils";
 
 /**
  * Handles the /seek chat command.
@@ -11,9 +11,9 @@ export async function seek(
 ) {
     await interaction.deferReply({ ephemeral: true });
 
-    const queue = player.queues.get(interaction.guildId);
+    const queue = getGuildQueue(player, interaction);
 
-    if (!queue || !queue.isPlaying())
+    if (!queue.isPlaying())
         return void interaction.followUp({
             content: "❌ | No music is being played!",
         });

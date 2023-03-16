@@ -9,15 +9,14 @@ export async function mix(
     interaction: ChatInputCommandInteraction,
     player: Player
 ) {
+    await interaction.deferReply({ ephemeral: true });
+
     const member = interaction.member as GuildMember;
     const voiceChannel = member.voice.channel;
     const queue = getGuildQueue(player, interaction);
 
     // User's song choice
     const trackQuery = interaction.options.getString("track", false);
-
-    // let's defer the interaction as things can take time to process
-    await interaction.deferReply({ ephemeral: true });
 
     if (!voiceChannel) {
         return void interaction.editReply(
@@ -44,6 +43,10 @@ export async function mix(
         const mix = await getMix(player, results.tracks[0]);
         queue.addTrack(mix.tracks);
 
+        // create message embed for the queue
+        const embed = createQueueEmbed(mix.title, queue, mix.tracks);
+        await interaction.followUp({ embeds: [embed] });
+
         if (!queue.isEmpty()) {
             if (!queue.channel) await queue.connect(voiceChannel);
             if (!queue.isPlaying()) await queue.node.play();
@@ -51,9 +54,6 @@ export async function mix(
         await interaction.editReply(
             `Added mix of **${mix.tracks.length} tracks** to the queue.`
         );
-
-        const embed = createQueueEmbed(mix.title, queue, mix.tracks);
-        return void interaction.followUp({ embeds: [embed] });
     } catch (e) {
         // let's return error if something failed
         return void interaction.editReply(`❌ | Something went wrong: ${e}`);
