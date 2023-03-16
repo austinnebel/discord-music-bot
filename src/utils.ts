@@ -150,28 +150,3 @@ export function createTrackEmbed(track: Track, title: string) {
         .setFooter({ text: `${track.author} | ${track.duration}` })
         .setColor(0xff0000);
 }
-
-// Simple method that returns a random emoji from list
-export function getRandomEmoji() {
-    const emojiList = [
-        "😭",
-        "😄",
-        "😌",
-        "🤓",
-        "😎",
-        "😤",
-        "🤖",
-        "😶‍🌫️",
-        "🌏",
-        "📸",
-        "💿",
-        "👋",
-        "🌊",
-        "✨",
-    ];
-    return emojiList[Math.floor(Math.random() * emojiList.length)];
-}
-
-export function capitalize(str: string): string {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
