@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { Player } from "discord-player";
+import { getGuildQueue } from "../utils";
 
 /**
  * Handles the /volume chat command.
@@ -9,7 +10,8 @@ export async function volume(
     player: Player
 ) {
     await interaction.deferReply({ ephemeral: true });
-    const queue = player.queues.get(interaction.guildId);
+
+    const queue = getGuildQueue(player, interaction);
 
     if (!queue || !queue.isPlaying()) {
         return void interaction.editReply({
@@ -17,7 +19,7 @@ export async function volume(
         });
     }
 
-    const vol = interaction.options.getInteger("volume", false);
+    const vol = interaction.options.getInteger("percent", false);
 
     if (!vol)
         return void interaction.editReply({

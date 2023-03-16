@@ -70,7 +70,13 @@ export const seek = new SlashCommandBuilder()
 
 export const volume = new SlashCommandBuilder()
     .setName("volume")
-    .setDescription("Sets the volume of the current queue, from 0 to 100.");
+    .setDescription("Sets or retrieves the current playback volume.")
+    .addIntegerOption(
+        new SlashCommandIntegerOption()
+            .setName("percent")
+            .setDescription("Playback volume, from 0 to 100.")
+            .setRequired(false)
+    );
 
 export const clear = new SlashCommandBuilder()
     .setName("clear")
