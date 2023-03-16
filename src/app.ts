@@ -137,33 +137,35 @@ client.on("interactionCreate", async (interaction) => {
         }
     }
 
-    if (!interaction.isChatInputCommand()) return;
-
-    console.log("Received interaction", interaction.commandName);
-
-    switch (interaction.commandName) {
-        case "play":
-            return await play(interaction, player);
-        case "mix":
-            return await mix(interaction, player);
-        case "skip":
-            return await skip(interaction, player);
-        case "pause":
-            return await pause(interaction, player);
-        case "seek":
-            return await seek(interaction, player);
-        case "skip-to":
-            return await skipTo(interaction, player);
-        case "clear":
-            return await clear(interaction, player);
-        case "shuffle":
-            return await shuffle(interaction, player);
-        case "volume":
-            return await volume(interaction, player);
-        case "queue":
-            return await queue(interaction, player);
-        case "ping":
-            return void (await interaction.reply("Pong!"));
+    if (interaction.isChatInputCommand()) {
+        try {
+            switch (interaction.commandName) {
+                case "play":
+                    return await play(interaction, player);
+                case "mix":
+                    return await mix(interaction, player);
+                case "skip":
+                    return await skip(interaction, player);
+                case "pause":
+                    return await pause(interaction, player);
+                case "seek":
+                    return await seek(interaction, player);
+                case "skip-to":
+                    return await skipTo(interaction, player);
+                case "clear":
+                    return await clear(interaction, player);
+                case "shuffle":
+                    return await shuffle(interaction, player);
+                case "volume":
+                    return await volume(interaction, player);
+                case "queue":
+                    return await queue(interaction, player);
+                case "ping":
+                    return void (await interaction.reply("Pong!"));
+            }
+        } catch (error) {
+            interaction.reply("❌ | Oops! Something went wrong.");
+        }
     }
 });
 
