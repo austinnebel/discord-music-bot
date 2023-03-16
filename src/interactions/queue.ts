@@ -18,6 +18,9 @@ export async function queue(
             content: "❌ | No music is being played!",
         });
     }
+    if (queue.isEmpty()) {
+        return void interaction.editReply("❌ | Queue is empty.");
+    }
 
     const embed = createMixEmbed("Queue", queue, queue.tracks.toArray());
     return void interaction.editReply({
