@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { Player } from "discord-player";
-import { createQueueEmbed, getGuildQueue } from "../utils";
+import { createQueueEmbed } from "../utils/embeds";
+import { getGuildQueue } from "../utils/general";
 
 /**
  * Handles the /queue chat command.

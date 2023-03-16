@@ -14,12 +14,13 @@ import { skip } from "./interactions/skip";
 import { pause } from "./interactions/pause";
 import { seek } from "./interactions/seek";
 import { volume } from "./interactions/volume";
-import { createTrackEmbed, getGuildQueue, QueueMetadata } from "./utils";
 import { queue } from "./interactions/queue";
 import { mix } from "./interactions/mix";
 import { clear } from "./interactions/clear";
 import { skipTo } from "./interactions/skipTo";
 import { shuffle } from "./interactions/shuffle";
+import { createTrackEmbed } from "./utils/embeds";
+import { QueueMetadata, getGuildQueue } from "./utils/general";
 
 // Application ID
 const app_id = process.env.APP_ID;

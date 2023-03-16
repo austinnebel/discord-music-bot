@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { Player } from "discord-player";
-import { getGuildQueue } from "../utils";
+import { getGuildQueue } from "../utils/general";
 
 /**
  * Handles the /volume chat command.

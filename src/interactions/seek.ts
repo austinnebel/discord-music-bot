@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { Player } from "discord-player";
-import { formattedTimeToSeconds, getGuildQueue } from "../utils";
+import { formattedTimeToSeconds, getGuildQueue } from "../utils/general";
 
 /**
  * Handles the /seek chat command.

@@ -1,6 +1,8 @@
 import { ChatInputCommandInteraction, GuildMember } from "discord.js";
 import { Player } from "discord-player";
-import { createQueueEmbed, getGuildQueue, getMix } from "../utils";
+import { getGuildQueue } from "../utils/general";
+import { getMix } from "../utils/mixes";
+import { createQueueEmbed } from "../utils/embeds";
 
 /**
  * Handles the /mix chat command.
