@@ -1,5 +1,5 @@
 import { GuildQueue, Player, RawTrackData, Track } from "discord-player";
-import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, GuildTextBasedChannel, Interaction } from "discord.js";
 import ytmpl from "yt-mix-playlist";
 
 /**
@@ -87,7 +87,7 @@ export async function getMix(player: Player, track: Track): Promise<MixResult> {
     };
 }
 
-export function createMixEmbed(
+export function createQueueEmbed(
     title: string,
     queue: GuildQueue,
     tracks: Track[]
@@ -114,6 +114,28 @@ export function createMixEmbed(
     }
 
     return embed;
+}
+
+export type QueueMetadata = {
+    channel: GuildTextBasedChannel;
+};
+
+/**
+ * Returns the queue for the guild that `interaction` originated from.
+ *
+ * If the queue does not exist, it is created.
+ *
+ * @param player The discord audio player object.
+ * @param interaction The interaction that requested the queue.
+ */
+export function getGuildQueue(player: Player, interaction: Interaction) {
+    return player.queues.create<QueueMetadata>(interaction.guildId, {
+        volume: 50,
+        // we can access this metadata object using queue.metadata later on
+        metadata: {
+            channel: interaction.channel,
+        },
+    });
 }
 /**
  * Creates a discord embed message that displays a track.

@@ -18,6 +18,7 @@ export const play = new SlashCommandBuilder()
                 "Track name or URL. Leave empty to resume the current track."
             )
             .setRequired(false)
+            .setAutocomplete(true)
     );
 
 export const mix = new SlashCommandBuilder()
@@ -32,6 +33,7 @@ export const mix = new SlashCommandBuilder()
                 "Track name or URL. Leave empty to create a mix from the current track."
             )
             .setRequired(false)
+            .setAutocomplete(true)
     );
 export const pause = new SlashCommandBuilder()
     .setName("pause")
@@ -51,6 +53,7 @@ export const skipTo = new SlashCommandBuilder()
                 "The index of the track. Use /queue to see the index of each track."
             )
             .setRequired(true)
+            .setAutocomplete(true)
     );
 
 export const seek = new SlashCommandBuilder()

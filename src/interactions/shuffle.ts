@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { Player, Track } from "discord-player";
-import { createMixEmbed } from "../utils";
+import { createQueueEmbed } from "../utils";
 
 /**
  * Handles the /shuffle chat command.
@@ -21,7 +21,7 @@ export async function shuffle(
     queue.clear();
     queue.addTrack(shuffled);
 
-    const embed = createMixEmbed("Queue Shuffled", queue, shuffled);
+    const embed = createQueueEmbed("Queue Shuffled", queue, shuffled);
     return void interaction.followUp({ embeds: [embed] });
 }
 

@@ -5,18 +5,16 @@ import {
     Client,
     GatewayIntentBits,
     ActivityType,
-    Interaction,
-    ChatInputCommandInteraction,
-    EmbedBuilder,
+    AutocompleteInteraction,
 } from "discord.js";
-import { Player } from "discord-player";
+import { GuildQueue, Player } from "discord-player";
 import * as commands from "./commands";
 import { play } from "./interactions/play";
 import { skip } from "./interactions/skip";
 import { pause } from "./interactions/pause";
 import { seek } from "./interactions/seek";
 import { volume } from "./interactions/volume";
-import { createTrackEmbed } from "./utils";
+import { createTrackEmbed, QueueMetadata } from "./utils";
 import { queue } from "./interactions/queue";
 import { mix } from "./interactions/mix";
 import { clear } from "./interactions/clear";
@@ -58,30 +56,26 @@ const player = new Player(client);
 //////////////// Player Events ////////////////////
 
 // called when a track is added to the queue
-player.events.on("audioTrackAdd", (queue, track) => {
+player.events.on("audioTrackAdd", (queue: GuildQueue<QueueMetadata>, track) => {
     // if this is the first song in the queue, don't show anything since it will
     // immediately trigger the 'playerStart' event instead
     if (!queue.currentTrack) {
         return;
     }
 
-    // queue.metadata object is defined in /play when creating the queue
-    const interaction = queue.metadata as ChatInputCommandInteraction;
     const embed = createTrackEmbed(track, "Added to Queue");
-    interaction.channel.send({ embeds: [embed] });
+    queue.metadata.channel.send({ embeds: [embed] });
 });
 
 // called when a track beings playing
-player.events.on("playerStart", (queue, track) => {
+player.events.on("playerStart", (queue: GuildQueue<QueueMetadata>, track) => {
     client.user.setPresence({
         status: "online",
         activities: [{ type: ActivityType.Listening, name: track.title }],
     });
 
-    // queue.metadata object is defined in /play when creating the queue
-    const interaction = queue.metadata as ChatInputCommandInteraction;
     const embed = createTrackEmbed(track, "Now Playing");
-    interaction.channel.send({ embeds: [embed] });
+    queue.metadata.channel.send({ embeds: [embed] });
 });
 
 // called when queue is empty
@@ -98,7 +92,51 @@ client.on("ready", (client) => {
     client.user.setActivity(null);
 });
 
+async function playAutoComplete(
+    player: Player,
+    interaction: AutocompleteInteraction
+) {
+    const query = interaction.options.getString("track", true);
+    const results = await player.search(query);
+
+    //Returns a list of songs with their title
+    return interaction.respond(
+        results.tracks.slice(0, 10).map((t) => ({
+            name: t.title,
+            value: t.url,
+        }))
+    );
+}
+
+async function skipToAutoComplete(
+    player: Player,
+    interaction: AutocompleteInteraction
+) {
+    const queue = player.queues.get(interaction.guildId);
+    if (!queue) return [];
+
+    //Returns a list of songs with their title
+    return interaction.respond(
+        queue.tracks.map((t, i) => ({
+            name: `${i + 1}. ${t.title}`,
+            value: i + 1,
+        }))
+    );
+}
 client.on("interactionCreate", async (interaction) => {
+    if (interaction.isAutocomplete()) {
+        switch (interaction.commandName) {
+            case "play":
+                return void (await playAutoComplete(player, interaction));
+            case "mix":
+                return void (await playAutoComplete(player, interaction));
+            case "skip-to":
+                return void (await skipToAutoComplete(player, interaction));
+            default:
+                return;
+        }
+    }
+
     if (!interaction.isChatInputCommand()) return;
 
     console.log("Received interaction", interaction.commandName);

@@ -1,10 +1,6 @@
-import {
-    ChatInputCommandInteraction,
-    EmbedBuilder,
-    GuildMember,
-} from "discord.js";
+import { ChatInputCommandInteraction, GuildMember } from "discord.js";
 import { Player } from "discord-player";
-import { createMixEmbed, createTrackEmbed, getMix } from "../utils";
+import { createQueueEmbed, getGuildQueue, getMix } from "../utils";
 
 /**
  * Handles the /mix chat command.
@@ -15,11 +11,7 @@ export async function mix(
 ) {
     const member = interaction.member as GuildMember;
     const voiceChannel = member.voice.channel;
-    const queue = player.queues.create(interaction.guildId, {
-        volume: 50,
-        // nodeOptions are the options for guild node (aka your queue in simple word)
-        metadata: interaction, // we can access this metadata object using queue.metadata later on
-    });
+    const queue = getGuildQueue(player, interaction);
 
     // User's song choice
     const trackQuery = interaction.options.getString("track", false);
@@ -44,7 +36,6 @@ export async function mix(
 
     try {
         const mixBase = trackQuery ? trackQuery : queue.currentTrack;
-
         const results = await player.search(mixBase);
 
         if (results.isEmpty()) {
@@ -61,7 +52,7 @@ export async function mix(
             `Added mix of **${mix.tracks.length} tracks** to the queue.`
         );
 
-        const embed = createMixEmbed(mix.title, queue, mix.tracks);
+        const embed = createQueueEmbed(mix.title, queue, mix.tracks);
         return void interaction.followUp({ embeds: [embed] });
     } catch (e) {
         // let's return error if something failed

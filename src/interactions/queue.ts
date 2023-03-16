@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { Player } from "discord-player";
-import { createMixEmbed } from "../utils";
+import { createQueueEmbed, getGuildQueue } from "../utils";
 
 /**
  * Handles the /queue chat command.
@@ -11,9 +11,9 @@ export async function queue(
 ) {
     await interaction.deferReply({ ephemeral: true });
 
-    const queue = player.queues.get(interaction.guildId);
+    const queue = getGuildQueue(player, interaction);
 
-    if (!queue || !queue.isPlaying()) {
+    if (!queue.isPlaying()) {
         return void interaction.editReply({
             content: "❌ | No music is being played!",
         });
@@ -22,7 +22,7 @@ export async function queue(
         return void interaction.editReply("❌ | Queue is empty.");
     }
 
-    const embed = createMixEmbed("Queue", queue, queue.tracks.toArray());
+    const embed = createQueueEmbed("Queue", queue, queue.tracks.toArray());
     return void interaction.editReply({
         embeds: [embed],
     });

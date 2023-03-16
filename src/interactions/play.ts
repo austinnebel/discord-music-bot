@@ -1,10 +1,6 @@
-import {
-    ChatInputCommandInteraction,
-    EmbedBuilder,
-    GuildMember,
-} from "discord.js";
+import { ChatInputCommandInteraction, GuildMember } from "discord.js";
 import { Player } from "discord-player";
-import { createTrackEmbed, getMix } from "../utils";
+import { getGuildQueue } from "../utils";
 
 /**
  * Handles the /play chat command.
@@ -15,11 +11,7 @@ export async function play(
 ) {
     const member = interaction.member as GuildMember;
     const voiceChannel = member.voice.channel;
-    const queue = player.queues.create(interaction.guildId, {
-        volume: 50,
-        // nodeOptions are the options for guild node (aka your queue in simple word)
-        metadata: interaction, // we can access this metadata object using queue.metadata later on
-    });
+    const queue = getGuildQueue(player, interaction);
 
     // User's song choice
     const trackQuery = interaction.options.getString("track", false);
@@ -35,7 +27,7 @@ export async function play(
 
     // functionality when no query specified
     if (!trackQuery) {
-        // resume currnet track if exists
+        // resume current track if exists
         if (queue.currentTrack) {
             const resumed = queue.node.resume();
             return void interaction.editReply({
