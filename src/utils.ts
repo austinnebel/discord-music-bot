@@ -130,7 +130,7 @@ export type QueueMetadata = {
  */
 export function getGuildQueue(player: Player, interaction: Interaction) {
     return player.queues.create<QueueMetadata>(interaction.guildId, {
-        volume: 25,
+        volume: 5,
         // we can access this metadata object using queue.metadata later on
         metadata: {
             channel: interaction.channel,
