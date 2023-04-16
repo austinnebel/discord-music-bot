@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, GuildMember } from "discord.js";
-import { Player } from "discord-player";
+import { Player, QueryType } from "discord-player";
 import { getGuildQueue } from "../utils/general";
 import { getMix } from "../utils/mixes";
 import { createQueueEmbed } from "../utils/embeds";
@@ -37,7 +37,9 @@ export async function mix(
 
     try {
         const mixBase = trackQuery ? trackQuery : queue.currentTrack;
-        const results = await player.search(mixBase);
+        const results = await player.search(mixBase, {
+            searchEngine: QueryType.YOUTUBE,
+        });
 
         if (results.isEmpty()) {
             return void interaction.editReply(`Failed to find results.`);

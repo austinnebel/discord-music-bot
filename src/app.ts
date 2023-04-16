@@ -20,7 +20,9 @@ import { clear } from "./interactions/clear";
 import { skipTo } from "./interactions/skipTo";
 import { shuffle } from "./interactions/shuffle";
 import { createTrackEmbed } from "./utils/embeds";
-import { QueueMetadata, getGuildQueue } from "./utils/general";
+import { QueueMetadata } from "./utils/general";
+import { playAutoComplete } from "./autocomplete/play";
+import { skipToAutoComplete } from "./autocomplete/skip-to";
 
 // Application ID
 const app_id = process.env.APP_ID;
@@ -93,36 +95,6 @@ client.on("ready", (client) => {
     client.user.setActivity(null);
 });
 
-async function playAutoComplete(
-    player: Player,
-    interaction: AutocompleteInteraction
-) {
-    const query = interaction.options.getString("track", true);
-    const results = await player.search(query);
-
-    //Returns a list of songs with their title
-    return interaction.respond(
-        results.tracks.slice(0, 10).map((t) => ({
-            name: t.title,
-            value: t.url,
-        }))
-    );
-}
-
-async function skipToAutoComplete(
-    player: Player,
-    interaction: AutocompleteInteraction
-) {
-    const queue = getGuildQueue(player, interaction);
-
-    //Returns a list of songs with their title
-    return interaction.respond(
-        queue.tracks.map((t, i) => ({
-            name: `${i + 1}. ${t.title}`,
-            value: i + 1,
-        }))
-    );
-}
 client.on("interactionCreate", async (interaction) => {
     if (interaction.isAutocomplete()) {
         switch (interaction.commandName) {
